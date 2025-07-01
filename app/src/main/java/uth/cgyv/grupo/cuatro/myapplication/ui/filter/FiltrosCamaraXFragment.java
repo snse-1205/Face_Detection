@@ -42,6 +42,8 @@ public class FiltrosCamaraXFragment extends Fragment {
     private FaceOverlayView overlayView;
     private ExecutorService cameraExecutor;
     private int currentFilter = 0;
+    private boolean isFrontCamera = true;
+
 
     @Nullable
     @Override
@@ -54,6 +56,7 @@ public class FiltrosCamaraXFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         previewView = view.findViewById(R.id.fullscreen_content);
         overlayView = view.findViewById(R.id.face_overlay);
+        overlayView.setMirror(isFrontCamera);
         Button filterButton = view.findViewById(R.id.dummy_button);
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
@@ -66,8 +69,10 @@ public class FiltrosCamaraXFragment extends Fragment {
 
         filterButton.setOnClickListener(v -> {
             currentFilter = (currentFilter + 1) % 3;
+            overlayView.setCurrentFilter(currentFilter);
             applyFilter(currentFilter);
         });
+
     }
 
     private void startCamera() {
@@ -81,13 +86,17 @@ public class FiltrosCamaraXFragment extends Fragment {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
                 Preview preview = new Preview.Builder().build();
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+                CameraSelector cameraSelector = isFrontCamera ?
+                        CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
+
 
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 FaceDetectorOptions options = new FaceDetectorOptions.Builder()
-                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE) // mejor calidad para expresiones
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)             // ojos, nariz, boca, etc.
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL) // 🔥 activa sonrisa y ojos abiertos
+                        .enableTracking()
                         .build();
 
                 FaceDetector detector = FaceDetection.getClient(options);
@@ -132,7 +141,7 @@ public class FiltrosCamaraXFragment extends Fragment {
     private void applyFilter(int filter) {
         switch (filter) {
             case 0:
-                previewView.setAlpha(1.0f); // Sin filtro
+                Toast.makeText(requireContext(), "Sin filtro", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 previewView.setAlpha(0.7f); // Filtro claro
@@ -141,7 +150,7 @@ public class FiltrosCamaraXFragment extends Fragment {
                 previewView.setAlpha(0.4f); // Filtro oscuro
                 break;
         }
-        Toast.makeText(requireContext(), "Filtro " + (filter + 1), Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Filtro " + (filter), Toast.LENGTH_SHORT).show();
     }
 
     @Override

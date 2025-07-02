@@ -93,9 +93,9 @@ public class FiltrosCamaraXFragment extends Fragment {
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 FaceDetectorOptions options = new FaceDetectorOptions.Builder()
-                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE) // mejor calidad para expresiones
-                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)             // ojos, nariz, boca, etc.
-                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL) // 🔥 activa sonrisa y ojos abiertos
+                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
                         .enableTracking()
                         .build();
 
@@ -144,13 +144,12 @@ public class FiltrosCamaraXFragment extends Fragment {
                 Toast.makeText(requireContext(), "Sin filtro", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                previewView.setAlpha(0.7f); // Filtro claro
+                Toast.makeText(requireContext(), "Filtro "+ (filter)+" Mostacho ", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                previewView.setAlpha(0.4f); // Filtro oscuro
+                Toast.makeText(requireContext(), "Filtro "+ (filter)+" Emociones " + (filter), Toast.LENGTH_SHORT).show();
                 break;
         }
-        Toast.makeText(requireContext(), "Filtro " + (filter), Toast.LENGTH_SHORT).show();
     }
 
     @Override

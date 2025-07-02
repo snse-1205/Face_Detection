@@ -1,23 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:padding="16dp">
+    android:orientation="vertical" android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <EditText
         android:id="@+id/editUsername"
-        android:hint="Nombre de usuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btnRegisters"
-        android:text="Registrar rostro"
+        android:hint="Usuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:text="Iniciar sesión con cámara"
+    <EditText
+        android:id="@+id/editPassword"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -27,11 +22,18 @@
         android:layout_height="300dp"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/btnRegister"
+        android:text="Registrar"
+        android:enabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" />
+
     <TextView
         android:id="@+id/textResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Resultado..."
-        android:textSize="16sp"
-        android:paddingTop="16dp" />
+        android:text="Esperando rostro..."
+        android:layout_marginTop="8dp" />
 </LinearLayout>

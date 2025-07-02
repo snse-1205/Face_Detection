@@ -42,7 +42,7 @@ public class FaceLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_face_login);
 
         editUsername = findViewById(R.id.editUsername);
-        btnRegister = findViewById(R.id.btnRegister);
+        //btnRegister = findViewById(R.id.btnRegister);
         btnLogin = findViewById(R.id.btnLogin);
         textResult = findViewById(R.id.textResult);
         previewView = findViewById(R.id.previewView);

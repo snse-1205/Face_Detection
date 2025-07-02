@@ -233,17 +233,16 @@ public class HomeFragment extends Fragment {
                                     (int) (boundingBox.bottom * scaleY)
                             ));
 
-                            String emotion = "Emocion Desconocida";
+                            String emotion = "";
                             if (face.getSmilingProbability() != null) {
                                 float smileProb = face.getSmilingProbability();
                                 if (smileProb > 0.8) {
                                     emotion = "Feliz 😊";
-                                } else if (smileProb > 0.4) {
+                                } else if (smileProb >= 0.4 && smileProb < 0.8) {
                                     emotion = "Neutral 🙂";
-                                } else {
-                                    emotion = "Modo Serio 😐";
-                                }
+                                } else if(smileProb >= 0.0 && smileProb < 0.4){emotion="Triste 😢";}else{emotion="";}
                             }
+
 
                             if (face.getLeftEyeOpenProbability() != null && face.getRightEyeOpenProbability() != null) {
                                 float leftEyeProb = face.getLeftEyeOpenProbability();

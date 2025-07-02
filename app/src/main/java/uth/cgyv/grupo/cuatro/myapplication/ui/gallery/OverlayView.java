@@ -15,15 +15,25 @@ import java.util.List;
 public class OverlayView extends View {
 
     private Paint generalLandmarkPaint;
+    private Paint LeftmouthLandmarkPaint;
+    private Paint RightmouthLandmarkPaint;
     private Paint LefteyeLandmarkPaint;
     private Paint RighteyeLandmarkPaint;
     private Paint noseLandmarkPaint;
+    private Paint LeftearLandmarkPaint;
+    private Paint RightearLandmarkPaint;
     private Paint textPaint;
 
     private List<List<PointF>> detectedGeneralLandmarks;
+    private List<List<PointF>> detectedLeftMouthLandmarks;
+    private List<List<PointF>> detectedRightMouthLandmarks;
     private List<List<PointF>> detecteLeftdEyeLandmarks;
     private List<List<PointF>> detectedRightEyeLandmarks;
     private List<List<PointF>> detectedNoseLandmarks;
+    private List<List<PointF>> detectedLeftEarLandmarks;
+    private List<List<PointF>> detectedRightEarLandmarks;
+
+
 
 
 
@@ -50,6 +60,19 @@ public class OverlayView extends View {
         generalLandmarkPaint.setStrokeWidth(5f);
         generalLandmarkPaint.setAntiAlias(true);
 
+        LeftmouthLandmarkPaint = new Paint();
+        LeftmouthLandmarkPaint.setColor(Color.RED);
+        LeftmouthLandmarkPaint.setStyle(Paint.Style.FILL);
+        LeftmouthLandmarkPaint.setStrokeWidth(5f);
+        LeftmouthLandmarkPaint.setAntiAlias(true);
+
+
+
+        RightmouthLandmarkPaint = new Paint();
+        RightmouthLandmarkPaint.setColor(Color.RED);
+        RightmouthLandmarkPaint.setStyle(Paint.Style.FILL);
+        RightmouthLandmarkPaint.setStrokeWidth(5f);
+        RightmouthLandmarkPaint.setAntiAlias(true);
 
         LefteyeLandmarkPaint = new Paint();
         LefteyeLandmarkPaint.setColor(Color.BLUE);
@@ -70,6 +93,18 @@ public class OverlayView extends View {
         noseLandmarkPaint.setStrokeWidth(5f);
         noseLandmarkPaint.setAntiAlias(true);
 
+        LeftearLandmarkPaint = new Paint();
+        LeftearLandmarkPaint.setColor(Color.BLACK);
+        LeftearLandmarkPaint.setStyle(Paint.Style.FILL);
+        LeftearLandmarkPaint.setStrokeWidth(5f);
+        LeftearLandmarkPaint.setAntiAlias(true);
+
+        RightearLandmarkPaint = new Paint();
+        RightearLandmarkPaint.setColor(Color.BLACK);
+        RightearLandmarkPaint.setStyle(Paint.Style.FILL);
+        RightearLandmarkPaint.setStrokeWidth(5f);
+        RightearLandmarkPaint.setAntiAlias(true);
+
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(24f);
@@ -80,18 +115,26 @@ public class OverlayView extends View {
 
 
         detectedGeneralLandmarks = new ArrayList<>();
+        detectedLeftMouthLandmarks = new ArrayList<>();
+        detectedRightMouthLandmarks = new ArrayList<>();
         detecteLeftdEyeLandmarks = new ArrayList<>();
         detectedRightEyeLandmarks = new ArrayList<>();
-        detectedNoseLandmarks = new ArrayList<>(); // Inicializa la nueva lista
+        detectedNoseLandmarks = new ArrayList<>();
+        detectedLeftEarLandmarks = new ArrayList<>();
+        detectedRightEarLandmarks = new ArrayList<>();
 
     }
 
 
-    public void setDetectedLandmarks(List<List<PointF>> generalLandmarks, List<List<PointF>> LefteyeLandmarks, List<List<PointF>> RighteyeLandmarks , List<List<PointF>> noseLandmarks) {
+    public void setDetectedLandmarks(List<List<PointF>> generalLandmarks, List<List<PointF>> LeftmouthLandmarks,List<List<PointF>> RightmouthLandmarks, List<List<PointF>> LefteyeLandmarks, List<List<PointF>> RighteyeLandmarks , List<List<PointF>> noseLandmarks, List<List<PointF>> LeftEarLandmarks, List<List<PointF>> RightEarLandmarks) {
         this.detectedGeneralLandmarks = generalLandmarks;
         this.detecteLeftdEyeLandmarks = LefteyeLandmarks;
         this.detectedRightEyeLandmarks = RighteyeLandmarks;
         this.detectedNoseLandmarks = noseLandmarks;
+        this.detectedLeftMouthLandmarks = LeftmouthLandmarks;
+        this.detectedRightMouthLandmarks = RightmouthLandmarks;
+        this.detectedLeftEarLandmarks = LeftEarLandmarks;
+        this.detectedRightEarLandmarks = RightEarLandmarks;
 
         postInvalidate();
     }
@@ -103,13 +146,34 @@ public class OverlayView extends View {
 
 
 
+
+
+        for (List<PointF> facePoints : detectedLeftMouthLandmarks) {
+            for (PointF point : facePoints) {
+                canvas.drawCircle(point.x, point.y, 8f, LeftmouthLandmarkPaint);
+
+                canvas.drawText("Boca Izquierda", point.x + 40f, point.y, textPaint);
+            }
+        }
+
+        for (List<PointF> facePoints : detectedRightMouthLandmarks) {
+            for (PointF point : facePoints) {
+                canvas.drawCircle(point.x, point.y, 8f, RightmouthLandmarkPaint);
+
+                canvas.drawText("Boca derecha", point.x + 40f, point.y, textPaint);
+            }
+        }
+
+
         for (List<PointF> facePoints : detectedGeneralLandmarks) {
             for (PointF point : facePoints) {
                 canvas.drawCircle(point.x, point.y, 8f, generalLandmarkPaint);
 
-                canvas.drawText("Boca", point.x + 40f, point.y, textPaint);
+                canvas.drawText("Boca inferior", point.x + 40f, point.y, textPaint);
             }
         }
+
+
 
 
         for (List<PointF> facePoints : detecteLeftdEyeLandmarks) {
@@ -134,6 +198,22 @@ public class OverlayView extends View {
                 canvas.drawCircle(point.x, point.y, 8f, noseLandmarkPaint);
 
                 canvas.drawText("Nariz", point.x + 40f, point.y, textPaint);
+            }
+        }
+
+        for (List<PointF> facePoints : detectedLeftEarLandmarks) {
+            for (PointF point : facePoints) {
+                canvas.drawCircle(point.x, point.y, 8f, LeftearLandmarkPaint);
+
+                canvas.drawText("Oreja izquierda", point.x + 40f, point.y, textPaint);
+            }
+        }
+
+        for (List<PointF> facePoints : detectedRightEarLandmarks) {
+            for (PointF point : facePoints) {
+                canvas.drawCircle(point.x, point.y, 8f, RightearLandmarkPaint);
+
+                canvas.drawText("Oreja derecha", point.x + 40f, point.y, textPaint);
             }
         }
 

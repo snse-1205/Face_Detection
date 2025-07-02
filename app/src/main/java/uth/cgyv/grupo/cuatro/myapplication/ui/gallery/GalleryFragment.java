@@ -222,9 +222,13 @@ public class GalleryFragment extends Fragment {
                     .addOnSuccessListener(faces -> {
                         List<Rect> faceRects = new ArrayList<>();
                         List<List<PointF>> allGeneralLandmarks = new ArrayList<>();
+                        List<List<PointF>> allLeftMouthLandmarks = new ArrayList<>();
+                        List<List<PointF>> allRightMouthLandmarks = new ArrayList<>();
                         List<List<PointF>> allLeftEyeLandmarks = new ArrayList<>();
                         List<List<PointF>> allRightEyeLandmarks = new ArrayList<>();
                         List<List<PointF>> allNoseLandmarks = new ArrayList<>();
+                        List<List<PointF>> allLeftEarLandmarks = new ArrayList<>();
+                        List<List<PointF>> allRightEarLandmarks = new ArrayList<>();
 
                         float scaleX = (float) previewView.getWidth() / rotatedBitmap.getWidth();
                         float scaleY = (float) previewView.getHeight() / rotatedBitmap.getHeight();
@@ -239,9 +243,14 @@ public class GalleryFragment extends Fragment {
                             ));
 
                             List<PointF> currentGeneralLandmarks = new ArrayList<>();
+                            List<PointF> currentLeftMouthLandmarks = new ArrayList<>();
+                            List<PointF> currentRightMouthLandmarks = new ArrayList<>();
                             List<PointF> currentLeftEyeLandmarks = new ArrayList<>();
                             List<PointF> currentRightEyeLandmarks = new ArrayList<>();
                             List<PointF> currentNoseMarks = new ArrayList<>();
+
+                            List<PointF> currentLeftEarMarks = new ArrayList<>();
+                            List<PointF> currentRightEarMarks = new ArrayList<>();
 
                             // Ojos
                             FaceLandmark leftEye = face.getLandmark(FaceLandmark.LEFT_EYE);
@@ -261,30 +270,44 @@ public class GalleryFragment extends Fragment {
                             // Boca
                             FaceLandmark mouthLeft = face.getLandmark(FaceLandmark.MOUTH_LEFT);
                             if (mouthLeft != null) {
-                                currentGeneralLandmarks.add(new PointF(mouthLeft.getPosition().x * scaleX, mouthLeft.getPosition().y * scaleY));
+                                currentLeftMouthLandmarks.add(new PointF(mouthLeft.getPosition().x * scaleX, mouthLeft.getPosition().y * scaleY));
                             }
                             FaceLandmark mouthRight = face.getLandmark(FaceLandmark.MOUTH_RIGHT);
                             if (mouthRight != null) {
-                                currentGeneralLandmarks.add(new PointF(mouthRight.getPosition().x * scaleX, mouthRight.getPosition().y * scaleY));
+                                currentRightMouthLandmarks.add(new PointF(mouthRight.getPosition().x * scaleX, mouthRight.getPosition().y * scaleY));
                             }
                             FaceLandmark mouthBottom = face.getLandmark(FaceLandmark.MOUTH_BOTTOM);
                             if (mouthBottom != null) {
                                 currentGeneralLandmarks.add(new PointF(mouthBottom.getPosition().x * scaleX, mouthBottom.getPosition().y * scaleY));
                             }
 
+                            FaceLandmark leftEar = face.getLandmark(FaceLandmark.LEFT_EAR);
+                            if (leftEar != null) {
+                                currentLeftEarMarks.add(new PointF(leftEar.getPosition().x * scaleX, leftEar.getPosition().y * scaleY));
+                            }
+                            FaceLandmark rightEar = face.getLandmark(FaceLandmark.RIGHT_EAR);
+                            if (rightEar != null) {
+                                currentRightEarMarks.add(new PointF(rightEar.getPosition().x * scaleX, rightEar.getPosition().y * scaleY));
+                            }
+
                             allGeneralLandmarks.add(currentGeneralLandmarks);
+                            allLeftMouthLandmarks.add(currentLeftMouthLandmarks);
+                            allRightMouthLandmarks.add(currentRightMouthLandmarks);
                             allLeftEyeLandmarks.add(currentLeftEyeLandmarks);
                             allRightEyeLandmarks.add(currentRightEyeLandmarks);
                             allNoseLandmarks.add(currentNoseMarks);
 
+                            allLeftEarLandmarks.add(currentLeftEarMarks);
+                            allRightEarLandmarks.add(currentRightEarMarks);
+
                         }
 
-                        overlayView.setDetectedLandmarks(allGeneralLandmarks, allLeftEyeLandmarks,allRightEyeLandmarks, allNoseLandmarks);
+                        overlayView.setDetectedLandmarks(allGeneralLandmarks,allLeftMouthLandmarks,allRightMouthLandmarks, allLeftEyeLandmarks,allRightEyeLandmarks, allNoseLandmarks, allLeftEarLandmarks, allRightEarLandmarks);
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error en la detección facial: " + e.getMessage(), e);
 
-                        overlayView.setDetectedLandmarks(new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>());
+                        overlayView.setDetectedLandmarks(new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),  new ArrayList<>());
                     })
                     .addOnCompleteListener(task -> {
                         imageProxy.close();

@@ -2,7 +2,9 @@ package uth.cgyv.grupo.cuatro.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,7 @@ public class LoginFragment extends Fragment {
     private boolean isFaceDetected = false;
     private FaceDetector faceDetector;
     private SharedPreferences sharedPreferences;
+    private static final int REQUEST_CAMERA_PERMISSION = 1001;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +55,13 @@ public class LoginFragment extends Fragment {
         btnLogin.setEnabled(false);
         sharedPreferences = requireActivity().getSharedPreferences("FacePrefs", Context.MODE_PRIVATE);
 
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        } else {
+            startCamera();
+        }
+
         btnLogin.setOnClickListener(v -> {
             String inputUser = editUsername.getText().toString();
             String inputPass = editPassword.getText().toString();
@@ -60,11 +70,14 @@ public class LoginFragment extends Fragment {
 
             if (inputUser.equals(storedUser) && inputPass.equals(storedPass) && isFaceDetected) {
                 textResult.setText("Bienvenido, " + inputUser);
-                // Aquí puedes lanzar el siguiente intent
-                // startActivity(new Intent(requireContext(), MainActivity.class));
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                startActivity(intent);
+                requireActivity().finish(); // Cierra la actividad actual con el LoginFragment
+
             } else {
                 textResult.setText("Credenciales incorrectas o sin rostro.");
             }
+
         });
 
         btnGoToRegister.setOnClickListener(v -> {
@@ -74,9 +87,23 @@ public class LoginFragment extends Fragment {
             ft.commit();
         });
 
-        startCamera();
         return view;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            } else {
+                textResult.setText("Permiso de camara denegado. No se puede continuar.");
+                btnLogin.setEnabled(false);
+            }
+        }
+    }
+
 
     private void startCamera() {
         faceDetector = FaceDetection.getClient(

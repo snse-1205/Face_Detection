@@ -22,8 +22,8 @@
     </style>
 
     <style name="Theme.FaceDetection.NoActionBar">
-        <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="Theme.FaceDetection.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

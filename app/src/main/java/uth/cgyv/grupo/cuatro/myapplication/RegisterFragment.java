@@ -58,10 +58,18 @@ public class RegisterFragment extends Fragment {
                         .putString("username", username)
                         .putString("password", password)
                         .apply();
+
                 textResult.setText("Registro exitoso para: " + username);
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new LoginFragment())
+                        .commit();
+
             } else {
                 textResult.setText("Completa todos los campos y asegúrate de estar visible.");
             }
+
         });
 
         initFaceDetection();

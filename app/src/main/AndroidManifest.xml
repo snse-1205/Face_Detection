@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-  
+
     <uses-feature android:name="android.hardware.camera.any" />
 
     <application
@@ -18,22 +17,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FaceDetection"
+        android:theme="@style/Theme.FaceDetection.NoActionBar"
         tools:targetApi="31">
+
         <activity
             android:name=".LoginActivity"
+            android:theme="@style/Theme.FaceDetection.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".FaceLoginActivity"
-            android:exported="true">
-        </activity>
+            android:theme="@style/Theme.FaceDetection"
+            android:exported="true" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+
     </application>
 
 </manifest>

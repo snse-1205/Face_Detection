@@ -21,6 +21,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="ThemeOverlay.FaceDetection.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
+        <item name="fullscreenTextColor">@color/light_blue_A400</item>
+    </style>
+
     <style name="Theme.FaceDetection.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -29,4 +34,5 @@
     <style name="Theme.FaceDetection.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.FaceDetection.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

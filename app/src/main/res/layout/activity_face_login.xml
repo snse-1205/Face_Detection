@@ -7,19 +7,24 @@
         android:id="@+id/editUsername"
         android:hint="Nombre de usuario"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="@color/texto_primario"/>
 
     <Button
         android:id="@+id/btnRegisters"
         android:text="Registrar rostro"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_texto_boton"
+        android:backgroundTint="@color/color_boton"/>
 
     <Button
         android:id="@+id/btnLogin"
         android:text="Iniciar sesión con cámara"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_texto_boton"
+        android:backgroundTint="@color/color_boton"/>
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"

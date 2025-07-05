@@ -54,12 +54,22 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_filtros, R.id.nav_face_landmarks, R.id.nav_face_emotions)
-                .setOpenableLayout(drawer)
-                .build();
+                R.id.nav_home,
+                R.id.nav_gallery,
+                R.id.nav_slideshow,
+                R.id.nav_filtros,
+                R.id.nav_face_emotions,
+                R.id.nav_face_landmarks,
+                R.id.nav_face_closed_eyes,
+                R.id.nav_face_angle
+        ).setOpenableLayout(drawer).build();
+
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
     }
 
     @Override

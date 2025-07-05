@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Material colors -->
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
+    <!-- Azul claro -->
+    <color name="light_blue_600">#039BE5</color>
+    <color name="light_blue_900">#01579B</color>
+    <color name="light_blue_A200">#40C4FF</color>
+    <color name="light_blue_A400">#00B0FF</color>
     <color name="black_overlay">#66000000</color>
 
+    <!-- Textos -->
+    <color name="text_color_primary">#000000</color>
+    <color name="text_color_secondary">#666666</color>
+    <color name="surface_color">#FFFFFF</color>
+    <color name="surface_variant_color">#F5F5F5</color>
 
-    <color name="text_color_primary">#FF000000</color>
-    <color name="text_color_secondary">#FF666666</color>
-    <color name="surface_color">#FFFFFFFF</color>
-    <color name="surface_variant_color">#FFF5F5F5</color>
+    <!-- Nuevos colores (beige, verde, café) -->
+    <color name="beige_claro">#FFF7F2EC</color>
+    <color name="beige_contenedor">#FFE6DCCD</color>
+    <color name="beige_medio">#FFD6C2A8</color>
 
+    <color name="verde_salvia_claro">#FFB2C4B2</color>
+    <color name="verde_salvia">#FF8EA48E</color>
+    <color name="verde_salvia_oscuro">#FF6E8C6E</color>
+
+    <color name="cafe_claro">#FFC7A27A</color>
+    <color name="cafe_medio">#FF8D6E49</color>
+    <color name="cafe_oscuro">#FF5D3E1E</color>
+
+    <!-- Funcionales -->
+    <color name="fondo_principal">#FFF7F2EC</color>
+    <color name="fondo_tarjeta">#FFE6DCCD</color>
+    <color name="color_boton">#FF8EA48E</color>
+    <color name="color_texto_boton">#FFFFFFFF</color>
+    <color name="color_hint_texto">#FF9E9E9E</color>
+    <color name="texto_primario">#FF3E3E3E</color>
+    <color name="texto_secundario">#FF6B6B6B</color>
 </resources>

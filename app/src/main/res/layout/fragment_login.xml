@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:padding="24dp">
+            android:padding="24dp"
+            android:background="@color/beige_contenedor">
 
             <EditText
                 android:id="@+id/editUsername"
@@ -31,7 +32,9 @@
                 android:background="@drawable/edittext_rounded_bg"
                 android:layout_marginBottom="16dp"
                 android:paddingStart="12dp"
-                android:drawablePadding="12dp" />
+                android:drawablePadding="12dp"
+                android:textColor="@color/texto_primario"
+                android:textColorHint="@color/verde_salvia_claro"/>
 
             <EditText
                 android:id="@+id/editPassword"
@@ -43,7 +46,9 @@
                 android:background="@drawable/edittext_rounded_bg"
                 android:layout_marginBottom="16dp"
                 android:paddingStart="12dp"
-                android:drawablePadding="12dp" />
+                android:drawablePadding="12dp"
+                android:textColor="@color/texto_primario"
+                android:textColorHint="@color/verde_salvia_claro"/>
 
             <androidx.camera.view.PreviewView
                 android:id="@+id/previewView"
@@ -57,21 +62,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:enabled="false" />
+                android:enabled="false"
+                android:backgroundTint="@color/color_boton"
+                android:textColor="@color/color_texto_boton"/>
 
             <Button
                 android:id="@+id/btnGoToRegister"
                 android:text="Registrar usuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/color_boton"
+                android:textColor="@color/color_texto_boton"/>
 
             <TextView
                 android:id="@+id/textResult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Esperando rostro..."
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/texto_secundario"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </ScrollView>

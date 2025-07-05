@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@color/beige_contenedor">
 
             <EditText
                 android:id="@+id/editUsername"
@@ -30,7 +31,9 @@
                 android:background="@drawable/edittext_rounded_bg"
                 android:layout_marginBottom="16dp"
                 android:paddingStart="12dp"
-                android:drawablePadding="12dp"/>
+                android:drawablePadding="12dp"
+                android:textColor="@color/texto_primario"
+                android:textColorHint="@color/verde_salvia_claro"/>
 
             <EditText
                 android:id="@+id/editPassword"
@@ -42,7 +45,9 @@
                 android:background="@drawable/edittext_rounded_bg"
                 android:layout_marginBottom="16dp"
                 android:paddingStart="12dp"
-                android:drawablePadding="12dp" />
+                android:drawablePadding="12dp"
+                android:textColor="@color/texto_primario"
+                android:textColorHint="@color/verde_salvia_claro"/>
 
             <androidx.camera.view.PreviewView
                 android:id="@+id/previewView"
@@ -62,8 +67,8 @@
                 android:text="Registrar"
                 android:textAllCaps="false"
                 android:textSize="16sp"
-                android:backgroundTint="#6200EE"
-                android:textColor="#fff" />
+                android:backgroundTint="@color/color_boton"
+                android:textColor="@color/color_texto_boton" />
 
             <TextView
                 android:id="@+id/textResult"
@@ -71,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="Esperando rostro..."
                 android:textAlignment="center"
-                android:textColor="#444"
+                android:textColor="@color/texto_secundario"
                 android:textSize="14sp"
                 android:layout_marginBottom="12dp" />
         </LinearLayout>

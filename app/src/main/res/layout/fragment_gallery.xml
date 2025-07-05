@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".ui.gallery.GalleryFragment">
+    tools:context=".ui.gallery.GalleryFragment"
+    android:background="@color/beige_contenedor">
 
     <TextView
         android:id="@+id/title_text"
@@ -15,7 +16,7 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="@color/texto_primario"
         android:layout_marginBottom="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,9 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="📲 Galería"
+            android:text="Galería"
             android:textSize="16sp"
-            android:backgroundTint="@color/purple_500" />
+            android:backgroundTint="@color/color_boton"
+            android:textColor="@color/color_texto_boton"/>
 
         <Button
             android:id="@+id/btn_camera"
@@ -48,9 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="📸 Cámara"
+            android:text="Cámara"
             android:textSize="16sp"
-            android:backgroundTint="@color/teal_700" />
+            android:backgroundTint="@color/color_boton"
+            android:textColor="@color/color_texto_boton"/>
 
     </LinearLayout>
 
@@ -75,7 +78,7 @@
         android:text="Seleccione una imagen para detectar rostros"
         android:textAlignment="center"
         android:textSize="18sp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="@color/texto_secundario"
         android:padding="16dp"
         android:background="?attr/colorSurface"
         android:elevation="4dp"

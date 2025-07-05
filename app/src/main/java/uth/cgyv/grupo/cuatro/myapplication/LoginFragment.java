@@ -35,7 +35,7 @@ public class LoginFragment extends Fragment {
     private Button btnLogin, btnGoToRegister;
     private TextView textResult;
     private PreviewView previewView;
-
+    private ProcessCameraProvider cameraProvider;
     private boolean isFaceDetected = false;
     private FaceDetector faceDetector;
     private SharedPreferences sharedPreferences;
@@ -116,7 +116,7 @@ public class LoginFragment extends Fragment {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();  // Guarda la referencia aquí
 
                 Preview preview = new Preview.Builder().build();
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
@@ -162,5 +162,24 @@ public class LoginFragment extends Fragment {
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(requireContext()));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();  // Libera la cámara para evitar errores de buffer abandonado
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();  // También libera aquí para seguridad
+        }
+        if (faceDetector != null) {
+            faceDetector.close();  // Cierra el detector ML Kit para liberar recursos
+        }
     }
 }

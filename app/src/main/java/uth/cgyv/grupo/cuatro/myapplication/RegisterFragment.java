@@ -36,6 +36,9 @@ public class RegisterFragment extends Fragment {
     private boolean isFaceDetected = false;
     private SharedPreferences sharedPreferences;
 
+    // Guarda el cameraProvider para liberar luego
+    private ProcessCameraProvider cameraProvider;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
@@ -46,7 +49,7 @@ public class RegisterFragment extends Fragment {
         textResult = view.findViewById(R.id.textResult);
         previewView = view.findViewById(R.id.previewView);
 
-        btnRegister.setEnabled(false); // Solo se habilita con rostro
+        btnRegister.setEnabled(false);
         sharedPreferences = requireActivity().getSharedPreferences("FacePrefs", Context.MODE_PRIVATE);
 
         btnRegister.setOnClickListener(v -> {
@@ -88,7 +91,7 @@ public class RegisterFragment extends Fragment {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
 
                 Preview preview = new Preview.Builder().build();
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
@@ -136,4 +139,26 @@ public class RegisterFragment extends Fragment {
             }
         }, ContextCompat.getMainExecutor(requireContext()));
     }
+
+    // Libera la cámara al pausar el fragmento
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
+    }
+
+    // Libera la cámara y el detector cuando se destruye la vista
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
+        if (faceDetector != null) {
+            faceDetector.close();
+        }
+    }
 }
+

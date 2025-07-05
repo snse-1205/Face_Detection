@@ -69,14 +69,12 @@ public class FaceLandmarks extends Fragment {
 
     private PreviewView previewView;
     Button btnFoto;
-
     ImageCapture captura;
-
     private ImageAnalysis imageAnalysis;
     private ExecutorService cameraExecutor;
     private OverlayView overlayView;
     private FaceDetector faceDetector;
-    private boolean isFrontCamera = false; // Empieza con cámara trasera por defecto
+    private boolean isFrontCamera = false;
     private ProcessCameraProvider cameraProvider;
     private Preview preview;
 

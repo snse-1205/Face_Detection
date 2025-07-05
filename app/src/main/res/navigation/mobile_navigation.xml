@@ -50,5 +50,10 @@
         android:name="uth.cgyv.grupo.cuatro.myapplication.ui.headangle.HeadAngle"
         android:label="@string/btn_head_angle"
         tools:layout="@layout/fragment_head_angle" />
+    <fragment
+        android:id="@+id/nav_face_contour"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.facecontours.FaceContoursFragment"
+        android:label="@string/menu_face_contour"
+        tools:layout="@layout/fragment_face_contours" />
 
 </navigation>

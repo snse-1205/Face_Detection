@@ -22,6 +22,11 @@
             android:title="@string/menu_face_landmarks"
             />
         <item
+            android:id="@+id/nav_face_contour"
+            android:icon="@drawable/ic_vector_triangle"
+            android:title="@string/menu_face_contour"
+            />
+        <item
             android:id="@+id/nav_face_angle"
             android:icon="@drawable/ic_angle_obtuse"
             android:title="@string/btn_head_angle"

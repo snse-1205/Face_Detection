@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_filtros,
                 R.id.nav_face_emotions,
                 R.id.nav_face_landmarks,
+                R.id.nav_face_contour,
                 R.id.nav_face_closed_eyes,
                 R.id.nav_face_angle
         ).setOpenableLayout(drawer).build();

@@ -26,7 +26,19 @@
     <fragment
         android:id="@+id/nav_filtros"
         android:name="uth.cgyv.grupo.cuatro.myapplication.ui.filter.FiltrosCamaraXFragment"
-        android:label="Filtros de Cámara"
+        android:label="@string/menu_filtros"
         tools:layout="@layout/fragment_filtros_camara_x" />
+
+    <fragment
+        android:id="@+id/nav_face_emotions"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.filter.FiltrosCamaraXFragment"
+        android:label="@string/menu_face_emotions"
+        tools:layout="@layout/fragment_face_emotions" />
+
+    <fragment
+        android:id="@+id/nav_face_landmarks"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.filter.FiltrosCamaraXFragment"
+        android:label="@string/menu_face_landmarks"
+        tools:layout="@layout/fragment_face_landmarks" />
 
 </navigation>

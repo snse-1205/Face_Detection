@@ -9,15 +9,16 @@
 
     <string name="menu_home">Home</string>
 
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="menu_gallery">Detección de Rostros</string>
     <string name="menu_slideshow">Detección de Sonrisas</string>
+
+    <string name="menu_filtros">Filtros en Rostro</string>
+    <string name="menu_face_emotions">Emociones Simples</string>
+    <string name="menu_face_landmarks">Landmarks Faciales</string>
 
 </resources>

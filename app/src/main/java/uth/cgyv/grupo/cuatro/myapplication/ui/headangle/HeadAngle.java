@@ -30,8 +30,13 @@ import uth.cgyv.grupo.cuatro.myapplication.databinding.FragmentHeadAngleBinding;
 
 public class HeadAngle extends Fragment {
 
+
     private FragmentHeadAngleBinding binding;
     private FaceDetector faceDetector;
+    private boolean isFrontCamera = true;
+    private ProcessCameraProvider cameraProvider;
+    private Preview preview;
+    private ImageAnalysis imageAnalysis;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -62,31 +67,36 @@ public class HeadAngle extends Fragment {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
 
-                Preview preview = new Preview.Builder().build();
+                if (preview == null) {
+                    preview = new Preview.Builder().build();
+                }
                 preview.setSurfaceProvider(binding.previewView.getSurfaceProvider());
 
-                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build();
+                if (imageAnalysis == null) {
+                    imageAnalysis = new ImageAnalysis.Builder()
+                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .build();
+                    imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), this::processImageProxy);
+                }
 
-                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()),
-                        this::processImageProxy);
-
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+                CameraSelector cameraSelector = isFrontCamera
+                        ? CameraSelector.DEFAULT_FRONT_CAMERA
+                        : CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
-                        getViewLifecycleOwner(),
-                        cameraSelector,
-                        preview,
-                        imageAnalysis
-                );
+                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), cameraSelector, preview, imageAnalysis);
+
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(requireContext()));
+    }
+
+    public void toggleCamera() {
+        isFrontCamera = !isFrontCamera;
+        startCamera();
     }
 
     @SuppressLint({"SetTextI18n", "DefaultLocale"})

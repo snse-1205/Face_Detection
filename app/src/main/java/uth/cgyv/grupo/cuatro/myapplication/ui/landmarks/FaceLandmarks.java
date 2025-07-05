@@ -76,6 +76,9 @@ public class FaceLandmarks extends Fragment {
     private ExecutorService cameraExecutor;
     private OverlayView overlayView;
     private FaceDetector faceDetector;
+    private boolean isFrontCamera = false; // Empieza con cámara trasera por defecto
+    private ProcessCameraProvider cameraProvider;
+    private Preview preview;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -119,42 +122,49 @@ public class FaceLandmarks extends Fragment {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
 
-                Preview preview = new Preview.Builder().build();
+                if (preview == null) {
+                    preview = new Preview.Builder().build();
+                }
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 captura = new ImageCapture.Builder()
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                         .build();
 
-                imageAnalysis = new ImageAnalysis.Builder()
-                        .setTargetResolution(new Size(640, 480))
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build();
+                if (imageAnalysis == null) {
+                    imageAnalysis = new ImageAnalysis.Builder()
+                            .setTargetResolution(new Size(640, 480))
+                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .build();
 
-                imageAnalysis.setAnalyzer(cameraExecutor, new FaceAnalyzer());
-
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-
-                try {
-                    cameraProvider.unbindAll();
-                    cameraProvider.bindToLifecycle(
-                            this,
-                            cameraSelector,
-                            preview,
-                            captura,
-                            imageAnalysis
-                    );
-                } catch (Exception exc) {
-                    Toast.makeText(requireContext(), "Error al iniciar la cámara: " + exc.getMessage(), Toast.LENGTH_SHORT).show();
+                    imageAnalysis.setAnalyzer(cameraExecutor, new FaceAnalyzer());
                 }
 
+                CameraSelector cameraSelector = isFrontCamera
+                        ? CameraSelector.DEFAULT_FRONT_CAMERA
+                        : CameraSelector.DEFAULT_BACK_CAMERA;
+
+                cameraProvider.unbindAll();
+
+                cameraProvider.bindToLifecycle(
+                        this,
+                        cameraSelector,
+                        preview,
+                        captura,
+                        imageAnalysis
+                );
+
             } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Error al obtener el proveedor de la cámara", e);
-                Toast.makeText(requireContext(), "Error al iniciar la cámara", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error al iniciar la cámara: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }, ContextCompat.getMainExecutor(requireContext()));
+    }
+
+    public void toggleCamera() {
+        isFrontCamera = !isFrontCamera;
+        iniciarCamara();
     }
 
     private void takePhoto() {
@@ -222,8 +232,14 @@ public class FaceLandmarks extends Fragment {
             int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
             Matrix matrix = new Matrix();
             matrix.postRotate(rotationDegrees);
+
+            if (isFrontCamera) {
+                matrix.postScale(-1, 1, bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
+            }
+
             Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
+            matrix.postRotate(rotationDegrees);
             InputImage inputImage = InputImage.fromBitmap(rotatedBitmap, 0);
 
             faceDetector.process(inputImage)

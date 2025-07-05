@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ExperimentalGetImage;
@@ -35,7 +36,7 @@ import java.util.concurrent.Executors;
 import uth.cgyv.grupo.cuatro.myapplication.R;
 import uth.cgyv.grupo.cuatro.myapplication.ui.filter.overlays.FaceOverlayView;
 
-@ExperimentalGetImage
+@OptIn(markerClass = androidx.camera.core.ExperimentalGetImage.class)
 public class FiltrosCamaraXFragment extends Fragment {
 
     private PreviewView previewView;
@@ -136,6 +137,12 @@ public class FiltrosCamaraXFragment extends Fragment {
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(requireContext()));
+    }
+
+    public void toggleCamera() {
+        isFrontCamera = !isFrontCamera;
+        overlayView.setMirror(isFrontCamera); // Invertir si es cámara frontal
+        startCamera(); // Reiniciar cámara con nueva selección
     }
 
     private void applyFilter(int filter) {

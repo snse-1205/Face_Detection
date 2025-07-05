@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.camera.core.CameraSelector;
@@ -23,7 +24,6 @@ import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import uth.cgyv.grupo.cuatro.myapplication.databinding.FragmentEyeStateBinding;
@@ -32,6 +32,10 @@ public class EyeState extends Fragment {
 
     private FragmentEyeStateBinding binding;
     private FaceDetector faceDetector;
+    private boolean isFrontCamera = true;
+    private ProcessCameraProvider cameraProvider;
+    private Preview preview;
+    private ImageAnalysis imageAnalysis;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -45,6 +49,11 @@ public class EyeState extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setupFaceDetector();
         startCamera();
+    }
+
+    public void toggleCamera() {
+        isFrontCamera = !isFrontCamera;
+        startCamera(); // Reiniciar con nueva selección
     }
 
     private void setupFaceDetector() {
@@ -63,20 +72,19 @@ public class EyeState extends Fragment {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
 
-                Preview preview = new Preview.Builder().build();
+                preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(binding.previewView.getSurfaceProvider());
 
-                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                imageAnalysis = new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
+                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), this::processImageProxy);
 
-                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), imageProxy -> {
-                    processImageProxy(imageProxy);
-                });
-
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+                CameraSelector cameraSelector = isFrontCamera
+                        ? CameraSelector.DEFAULT_FRONT_CAMERA
+                        : CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle(

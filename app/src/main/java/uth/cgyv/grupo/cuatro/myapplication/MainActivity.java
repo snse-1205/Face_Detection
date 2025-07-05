@@ -13,6 +13,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,6 +22,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import uth.cgyv.grupo.cuatro.myapplication.databinding.ActivityMainBinding;
+import uth.cgyv.grupo.cuatro.myapplication.ui.emotions.FaceEmotions;
+import uth.cgyv.grupo.cuatro.myapplication.ui.eyesclosed.EyeState;
+import uth.cgyv.grupo.cuatro.myapplication.ui.filter.FiltrosCamaraXFragment;
+import uth.cgyv.grupo.cuatro.myapplication.ui.headangle.HeadAngle;
+import uth.cgyv.grupo.cuatro.myapplication.ui.landmarks.FaceLandmarks;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+        binding.appBarMain.fab.setBackgroundColor(
+                ContextCompat.getColor(this, R.color.verde_salvia_oscuro)
+        );
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home,
@@ -69,6 +78,83 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int id = destination.getId();
+
+            if (id == R.id.nav_face_landmarks) {
+                binding.appBarMain.fab.setImageResource(R.drawable.ic_camera_flip);
+                binding.appBarMain.fab.show();
+                binding.appBarMain.fab.setOnClickListener(v -> {
+                    Fragment currentFragment = getSupportFragmentManager()
+                            .findFragmentById(R.id.nav_host_fragment_content_main)
+                            .getChildFragmentManager()
+                            .getPrimaryNavigationFragment();
+
+                    if (currentFragment instanceof FaceLandmarks) {
+                        ((FaceLandmarks) currentFragment).toggleCamera();
+                    }
+                });
+            } else if (id == R.id.nav_face_angle) {
+                binding.appBarMain.fab.setImageResource(R.drawable.ic_camera_flip);
+                binding.appBarMain.fab.show();
+                binding.appBarMain.fab.setOnClickListener(v -> {
+                    Fragment currentFragment = getSupportFragmentManager()
+                            .findFragmentById(R.id.nav_host_fragment_content_main)
+                            .getChildFragmentManager()
+                            .getPrimaryNavigationFragment();
+
+                    if (currentFragment instanceof HeadAngle) {
+                        ((HeadAngle) currentFragment).toggleCamera();
+                    }});
+            } else if (id == R.id.nav_filtros) {
+                binding.appBarMain.fab.setImageResource(R.drawable.ic_camera_flip);
+                binding.appBarMain.fab.show();
+                binding.appBarMain.fab.setOnClickListener(v -> {
+                    FiltrosCamaraXFragment fragment = (FiltrosCamaraXFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.nav_host_fragment_content_main)
+                            .getChildFragmentManager()
+                            .getFragments()
+                            .get(0); // obtener el fragmento hijo real
+
+                    if (fragment != null) {
+                        fragment.toggleCamera();
+                    }
+                });
+            } else if (id == R.id.nav_face_closed_eyes) {
+                binding.appBarMain.fab.setImageResource(R.drawable.ic_camera_flip); // cambia el ícono
+                binding.appBarMain.fab.show();
+
+                binding.appBarMain.fab.setOnClickListener(v -> {
+                    Fragment currentFragment = getSupportFragmentManager()
+                            .findFragmentById(R.id.nav_host_fragment_content_main)
+                            .getChildFragmentManager()
+                            .getPrimaryNavigationFragment();
+
+                    if (currentFragment instanceof EyeState) {
+                        ((EyeState) currentFragment).toggleCamera();
+                    }
+                });
+            }
+            else if(id == R.id.nav_face_emotions){
+                binding.appBarMain.fab.setImageResource(R.drawable.ic_camera_flip);
+                binding.appBarMain.fab.show();
+                binding.appBarMain.fab.setOnClickListener(v -> {
+                    Fragment currentFragment = getSupportFragmentManager()
+                            .findFragmentById(R.id.nav_host_fragment_content_main)
+                            .getChildFragmentManager()
+                            .getPrimaryNavigationFragment();
+
+                    if (currentFragment instanceof FaceEmotions) {
+                        ((FaceEmotions) currentFragment).toggleCamera();
+                    }
+                });
+            } else{
+                    // Por defecto, puedes ocultarlo si no se necesita
+                    binding.appBarMain.fab.hide();
+            }
+
+        });
 
     }
 

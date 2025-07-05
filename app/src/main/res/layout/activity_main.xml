@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    android:background="@color/fondo_principal">
+    android:background="@color/beige_claro">
 
     <include
         android:id="@+id/app_bar_main"
@@ -25,5 +25,6 @@
         app:menu="@menu/activity_main_drawer"
 
         app:itemTextColor="@color/texto_primario"
-        app:itemIconTint="@color/verde_salvia_oscuro" />
+        app:itemIconTint="@color/verde_salvia_oscuro"
+        android:background="@color/beige_claro"/>
 </androidx.drawerlayout.widget.DrawerLayout>

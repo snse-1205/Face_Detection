@@ -31,14 +31,24 @@
 
     <fragment
         android:id="@+id/nav_face_emotions"
-        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.filter.FiltrosCamaraXFragment"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.emotions.FaceEmotions"
         android:label="@string/menu_face_emotions"
         tools:layout="@layout/fragment_face_emotions" />
 
     <fragment
         android:id="@+id/nav_face_landmarks"
-        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.filter.FiltrosCamaraXFragment"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.landmarks.FaceLandmarks"
         android:label="@string/menu_face_landmarks"
         tools:layout="@layout/fragment_face_landmarks" />
+    <fragment
+        android:id="@+id/nav_face_closed_eyes"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.eyesclosed.EyeState"
+        android:label="@string/btn_eye_state"
+        tools:layout="@layout/fragment_eye_state" />
+    <fragment
+        android:id="@+id/nav_face_angle"
+        android:name="uth.cgyv.grupo.cuatro.myapplication.ui.headangle.HeadAngle"
+        android:label="@string/btn_head_angle"
+        tools:layout="@layout/fragment_head_angle" />
 
 </navigation>

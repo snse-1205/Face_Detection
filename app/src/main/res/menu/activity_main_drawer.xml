@@ -17,19 +17,30 @@
             android:icon="@drawable/ic_emoticon_outline"
             android:title="@string/menu_slideshow" />
         <item
+            android:id="@+id/nav_face_landmarks"
+            android:icon="@drawable/ic_dots_circle"
+            android:title="@string/menu_face_landmarks"
+            />
+        <item
+            android:id="@+id/nav_face_angle"
+            android:icon="@drawable/ic_angle_obtuse"
+            android:title="@string/btn_head_angle"
+            />
+        <item
+            android:id="@+id/nav_face_closed_eyes"
+            android:icon="@drawable/ic_eye_outline"
+            android:title="@string/btn_eye_state"
+            />
+        <item
+            android:id="@+id/nav_face_emotions"
+            android:icon="@drawable/ic_filter_camara"
+            android:title="@string/menu_face_emotions"
+            />
+        <item
             android:id="@+id/nav_filtros"
             android:icon="@drawable/ic_face_man_shimmer_outline"
             android:title="@string/menu_filtros"
             />
-        <item
-            android:id="@+id/nav_face_emotions"
-            android:icon="@drawable/ic_dots_circle"
-            android:title="@string/menu_face_emotions"
-            />
-        <item
-            android:id="@+id/nav_face_landmarks"
-            android:icon="@drawable/ic_filter_camara"
-            android:title="@string/menu_face_landmarks"
-            />
+
     </group>
 </menu>

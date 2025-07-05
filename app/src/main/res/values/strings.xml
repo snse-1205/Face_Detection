@@ -2,8 +2,8 @@
     <string name="app_name">Face Detection</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Face Detection</string>
+    <string name="nav_header_subtitle">API de detección de rostro del Kit de AA, puedes detectar rostros en una imagen, identificar rasgos faciales clave y obtener los contornos de los rostros detectados.</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 

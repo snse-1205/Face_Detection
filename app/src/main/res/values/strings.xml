@@ -28,4 +28,16 @@
     <string name="btn_eye_state">Estado de Ojos</string>
     <string name="analyzing_angle">Analizando ángulo...</string>
 
+    <string name="title_login">Login con Face Detection</string>
+
+    <string name="desc_login">Este módulo implementa un sistema de acceso a la app usando la cámara frontal. Se utiliza la presencia de un rostro como un "recaptcha visual", asegurando que quien accede sea una persona. El usuario puede registrarse normalmente, y luego iniciar sesión, asegurándose de que hay una persona al otro lado. Si se detecta al menos un rostro, se concede el acceso.</string>
+    <string name="desc_filters">Aplica filtros visuales como bigote y GIFs de gatos sobre el rostro detectado con la cámara en vivo. Utiliza los puntos clave del rostro, landmarks, para adaptar los gráficos a los ojos, nariz y boca, logrando que los filtros se muevan junto con la cara del usuario. Es una función atractiva que simula apps populares de efectos faciales.</string>
+    <string name="desc_detection_basic">Permite analizar una imagen para contar cuántos rostros hay presentes. El usuario puede seleccionar una imagen de la galería o tomar una foto, y el sistema mostrará la cantidad de rostros detectados en ella. Ideal para pruebas de grupo o análisis de fotografías con múltiples personas.</string>
+    <string name="desc_detection_smile">Detecta si un rostro en una imagen está sonriendo. Se basa en la probabilidad de sonrisa que ML Kit ofrece y clasifica el rostro como "Serio", "Neutro" o "Sonriendo", mostrando el resultado bajo la imagen seleccionada. Es útil para analizar emociones básicas en fotos.</string>
+    <string name="desc_head_angle">Evalúa el ángulo de giro de la cabeza del usuario en tiempo real, usando la cámara. Según el valor angular detectado, y se muestra su grado.</string>
+    <string name="desc_eyes_open">Detecta si los ojos del usuario están abiertos o cerrados en tiempo real. Es útil para interpretar si el usuario está atento, dormido o parpadeando.</string>
+    <string name="desc_landmarks">Permite ver en pantalla los puntos clave del rostro (landmarks) como ojos, orejas, nariz y boca, en tiempo real. Estos puntos se dibujan dinámicamente sobre la cámara para mostrar la detección facial activa.</string>
+    <string name="desc_face_emotions">Muestra un emoji representando el estado del usuario: 😄 feliz, 😐 serio, 🙁 triste, 😴 dormido, 😉 guiño. Es una forma básica pero efectiva de representar emociones simples visualmente, basados en la probabilidad de sonrisa y los ojos cerrados.</string>
+    <string name="desc_face_contour">Muestra el contorno del rostro detectado en cámara en vivo, destacando los bordes de ojos, cejas, nariz, boca y la silueta facial completa. Aunque el trazado puede no ajustarse de forma precisa en todos los casos.</string>
+
 </resources>

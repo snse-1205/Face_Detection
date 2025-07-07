@@ -140,19 +140,20 @@ public class FaceContoursFragment extends Fragment {
 
                     for (Face face : faces) {
                         contourPointsList.add(new OverlayView.FaceContourPoints(
-                                getPoints(face.getContour(FaceContour.FACE)),
-                                getPoints(face.getContour(FaceContour.LEFT_EYEBROW_TOP)),
-                                getPoints(face.getContour(FaceContour.RIGHT_EYEBROW_TOP)),
-                                getPoints(face.getContour(FaceContour.LEFT_EYE)),
-                                getPoints(face.getContour(FaceContour.RIGHT_EYE)),
-                                getPoints(face.getContour(FaceContour.UPPER_LIP_TOP)),
-                                getPoints(face.getContour(FaceContour.LOWER_LIP_BOTTOM)),
-                                getPoints(face.getContour(FaceContour.NOSE_BRIDGE)),
-                                getPoints(face.getContour(FaceContour.NOSE_BOTTOM))
+                                transformPoints(face.getContour(FaceContour.FACE).getPoints()),
+                                transformPoints(face.getContour(FaceContour.LEFT_EYEBROW_TOP).getPoints()),
+                                transformPoints(face.getContour(FaceContour.RIGHT_EYEBROW_TOP).getPoints()),
+                                transformPoints(face.getContour(FaceContour.LEFT_EYE).getPoints()),
+                                transformPoints(face.getContour(FaceContour.RIGHT_EYE).getPoints()),
+                                transformPoints(face.getContour(FaceContour.UPPER_LIP_TOP).getPoints()),
+                                transformPoints(face.getContour(FaceContour.LOWER_LIP_BOTTOM).getPoints()),
+                                transformPoints(face.getContour(FaceContour.NOSE_BRIDGE).getPoints()),
+                                transformPoints(face.getContour(FaceContour.NOSE_BOTTOM).getPoints())
                         ));
+
                     }
 
-                    overlayView.setFaceContours(contourPointsList, 0, 0, isFrontCamera);
+                    overlayView.setFaceContours(contourPointsList);
 
                     imageProxy.close();
                 })
@@ -163,25 +164,32 @@ public class FaceContoursFragment extends Fragment {
                 });
     }
 
-
-    private List<float[]> getPoints(FaceContour contour) {
+    private List<float[]> transformPoints(List<PointF> contourPoints) {
         List<float[]> points = new ArrayList<>();
-        if (contour == null) return points;
+        if (contourPoints == null || previewView.getWidth() == 0 || previewView.getHeight() == 0)
+            return points;
 
         float viewWidth = previewView.getWidth();
         float viewHeight = previewView.getHeight();
         float imageWidth = this.imageWidth;
         float imageHeight = this.imageHeight;
 
-        for (PointF point : contour.getPoints()) {
-            float x = isFrontCamera ? (imageWidth - point.x) : point.x;
-            float px = x / imageWidth * viewWidth;
-            float py = point.y / imageHeight * viewHeight;
+
+        for (PointF point : contourPoints) {
+            float x = point.x;
+            float y = point.y;
+
+            if (isFrontCamera) x = imageWidth - x;
+
+            float px = x * (viewWidth / imageWidth);
+            float py = y * (viewHeight / imageHeight);
+
             points.add(new float[]{px, py});
         }
 
         return points;
     }
+
 
 
     @Override

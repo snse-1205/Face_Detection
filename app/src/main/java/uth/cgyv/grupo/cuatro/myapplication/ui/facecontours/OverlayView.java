@@ -16,9 +16,6 @@ import java.util.List;
 public class OverlayView extends View {
 
     private List<FaceContourPoints> faceContours = new ArrayList<>();
-    private int imageWidth = 0;
-    private int imageHeight = 0;
-    private boolean isFrontCamera = true;
 
     private final Paint paintFace = new Paint();
     private final Paint paintLeftEyebrow = new Paint();
@@ -68,18 +65,8 @@ public class OverlayView extends View {
         paintNose.setStrokeWidth(4f);
     }
 
-    /**
-     * Actualiza los contornos y los parámetros para dibujar correctamente escalado y espejo
-     * @param contours lista de contornos detectados
-     * @param imgWidth ancho original de la imagen de cámara
-     * @param imgHeight alto original de la imagen de cámara
-     * @param mirror true si es cámara frontal para hacer efecto espejo
-     */
-    public void setFaceContours(List<FaceContourPoints> contours, int imgWidth, int imgHeight, boolean mirror) {
+    public void setFaceContours(List<FaceContourPoints> contours) {
         this.faceContours = contours;
-        this.imageWidth = imgWidth;
-        this.imageHeight = imgHeight;
-        this.isFrontCamera = mirror;
         postInvalidate();
     }
 
@@ -123,9 +110,6 @@ public class OverlayView extends View {
         }
     }
 
-
-
-    // Clase auxiliar para almacenar contornos por cara
     public static class FaceContourPoints {
         List<float[]> face;
         List<float[]> leftEyebrow;

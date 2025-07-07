@@ -21,6 +21,7 @@
     <string name="menu_face_emotions">Emociones Simples</string>
     <string name="menu_face_landmarks">Landmarks Faciales</string>
     <string name="menu_face_contour">Contorno Facial</string>
+    <string name="menu_face_logout">Cerrar sesion</string>
 
     <string name="analyzing_eyes">Analizando ojos...</string>
     <string name="btn_head_angle">Ángulo de Cabeza</string>

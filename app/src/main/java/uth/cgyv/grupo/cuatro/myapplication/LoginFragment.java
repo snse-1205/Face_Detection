@@ -21,7 +21,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
@@ -29,15 +28,18 @@ import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class LoginFragment extends Fragment {
 
     private EditText editUsername, editPassword;
     private Button btnLogin, btnGoToRegister;
     private TextView textResult;
     private PreviewView previewView;
+    private FaceDetector faceDetector;
     private ProcessCameraProvider cameraProvider;
     private boolean isFaceDetected = false;
-    private FaceDetector faceDetector;
     private SharedPreferences sharedPreferences;
     private static final int REQUEST_CAMERA_PERMISSION = 1001;
 
@@ -55,6 +57,7 @@ public class LoginFragment extends Fragment {
         btnLogin.setEnabled(false);
         sharedPreferences = requireActivity().getSharedPreferences("FacePrefs", Context.MODE_PRIVATE);
 
+        // Cámara
         if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{android.Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
@@ -63,87 +66,83 @@ public class LoginFragment extends Fragment {
         }
 
         btnLogin.setOnClickListener(v -> {
-            String inputUser = editUsername.getText().toString();
-            String inputPass = editPassword.getText().toString();
-            String storedUser = sharedPreferences.getString("username", "");
-            String storedPass = sharedPreferences.getString("password", "");
+            String inputUser = editUsername.getText().toString().trim();
+            String inputPass = editPassword.getText().toString().trim();
 
-            if (inputUser.equals(storedUser) && inputPass.equals(storedPass) && isFaceDetected) {
-                textResult.setText("Bienvenido, " + inputUser);
-                Intent intent = new Intent(requireActivity(), MainActivity.class);
-                startActivity(intent);
-                requireActivity().finish(); // Cierra la actividad actual con el LoginFragment
-
-            } else {
-                textResult.setText("Credenciales incorrectas o sin rostro.");
+            Set<String> users = new HashSet<>(sharedPreferences.getStringSet("users", new HashSet<>()));
+            if (!users.contains(inputUser)) {
+                textResult.setText("Usuario no registrado.");
+                return;
             }
 
+            String storedPass = sharedPreferences.getString("pass_" + inputUser, "");
+            if (!inputPass.equals(storedPass)) {
+                textResult.setText("Contraseña incorrecta.");
+                return;
+            }
+
+            if (!isFaceDetected) {
+                textResult.setText("Asegúrate de que tu rostro esté visible.");
+                return;
+            }
+
+            sharedPreferences.edit()
+                    .putBoolean("isLoggedIn", true)
+                    .putString("currentUser", inputUser)
+                    .apply();
+
+            textResult.setText("Bienvenido, " + inputUser);
+            startActivity(new Intent(requireActivity(), MainActivity.class));
+            requireActivity().finish();
         });
 
         btnGoToRegister.setOnClickListener(v -> {
-            FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragmentContainer, new RegisterFragment());
-            ft.addToBackStack(null);
-            ft.commit();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new RegisterFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
+
 
         return view;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCamera();
-            } else {
-                textResult.setText("Permiso de camara denegado. No se puede continuar.");
-                btnLogin.setEnabled(false);
-            }
-        }
-    }
-
-
+    @SuppressLint("MissingPermission")
     private void startCamera() {
         faceDetector = FaceDetection.getClient(
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-                        .build());
+                        .build()
+        );
 
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(requireContext());
 
         cameraProviderFuture.addListener(() -> {
             try {
-                cameraProvider = cameraProviderFuture.get();  // Guarda la referencia aquí
-
+                cameraProvider = cameraProviderFuture.get();
                 Preview preview = new Preview.Builder().build();
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-
-                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                CameraSelector selector = CameraSelector.DEFAULT_FRONT_CAMERA;
+                ImageAnalysis analysis = new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
 
-                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), imageProxy -> {
-                    @SuppressLint("UnsafeOptInUsageError")
+                analysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), imageProxy -> {
                     InputImage image = InputImage.fromMediaImage(
-                            imageProxy.getImage(), imageProxy.getImageInfo().getRotationDegrees());
+                            imageProxy.getImage(), imageProxy.getImageInfo().getRotationDegrees()
+                    );
 
                     faceDetector.process(image)
                             .addOnSuccessListener(faces -> {
-                                if (!faces.isEmpty()) {
-                                    if (!isFaceDetected) {
-                                        isFaceDetected = true;
-                                        btnLogin.setEnabled(true);
-                                        textResult.setText("Rostro detectado.");
-                                    }
-                                } else {
-                                    if (isFaceDetected) {
-                                        isFaceDetected = false;
-                                        btnLogin.setEnabled(false);
-                                        textResult.setText("Esperando rostro...");
-                                    }
+                                if (!faces.isEmpty() && !isFaceDetected) {
+                                    isFaceDetected = true;
+                                    btnLogin.setEnabled(true);
+                                    textResult.setText("Rostro detectado.");
+                                } else if (faces.isEmpty() && isFaceDetected) {
+                                    isFaceDetected = false;
+                                    btnLogin.setEnabled(false);
+                                    textResult.setText("Esperando rostro...");
                                 }
                                 imageProxy.close();
                             })
@@ -154,9 +153,8 @@ public class LoginFragment extends Fragment {
                 });
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), cameraSelector, preview, imageAnalysis);
+                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), selector, preview, analysis);
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
             } catch (Exception e) {
                 textResult.setText("Error al iniciar cámara.");
                 e.printStackTrace();
@@ -167,19 +165,13 @@ public class LoginFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (cameraProvider != null) {
-            cameraProvider.unbindAll();  // Libera la cámara para evitar errores de buffer abandonado
-        }
+        if (cameraProvider != null) cameraProvider.unbindAll();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (cameraProvider != null) {
-            cameraProvider.unbindAll();  // También libera aquí para seguridad
-        }
-        if (faceDetector != null) {
-            faceDetector.close();  // Cierra el detector ML Kit para liberar recursos
-        }
+        if (cameraProvider != null) cameraProvider.unbindAll();
+        if (faceDetector != null) faceDetector.close();
     }
 }

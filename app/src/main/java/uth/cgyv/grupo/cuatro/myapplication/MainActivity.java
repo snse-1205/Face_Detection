@@ -1,9 +1,13 @@
 package uth.cgyv.grupo.cuatro.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
@@ -150,7 +154,14 @@ public class MainActivity extends AppCompatActivity {
                         ((FaceEmotions) currentFragment).toggleCamera();
                     }
                 });
-            } else{
+            }
+            else if (id == R.id.nav_logout) {
+                binding.appBarMain.fab.setOnClickListener(v -> {
+                    logout();
+                    return;
+                });
+            }
+            else{
                     // Por defecto, puedes ocultarlo si no se necesita
                     binding.appBarMain.fab.hide();
             }
@@ -158,6 +169,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    public void logout() {
+        SharedPreferences prefs = getSharedPreferences("FacePrefs", Context.MODE_PRIVATE);
+        prefs.edit()
+                .remove("isLoggedIn")
+                .remove("currentUser")
+                .apply();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -176,6 +201,21 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_logout) {
+            logout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
 
     @Override
     public boolean onSupportNavigateUp() {

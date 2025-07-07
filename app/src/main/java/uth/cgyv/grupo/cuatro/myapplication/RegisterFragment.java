@@ -19,12 +19,16 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class RegisterFragment extends Fragment {
 
@@ -35,8 +39,6 @@ public class RegisterFragment extends Fragment {
     private FaceDetector faceDetector;
     private boolean isFaceDetected = false;
     private SharedPreferences sharedPreferences;
-
-    // Guarda el cameraProvider para liberar luego
     private ProcessCameraProvider cameraProvider;
 
     @Override
@@ -53,30 +55,44 @@ public class RegisterFragment extends Fragment {
         sharedPreferences = requireActivity().getSharedPreferences("FacePrefs", Context.MODE_PRIVATE);
 
         btnRegister.setOnClickListener(v -> {
-            String username = editUsername.getText().toString();
-            String password = editPassword.getText().toString();
+            String username = editUsername.getText().toString().trim();
+            String password = editPassword.getText().toString().trim();
 
-            if (!username.isEmpty() && !password.isEmpty() && isFaceDetected) {
-                sharedPreferences.edit()
-                        .putString("username", username)
-                        .putString("password", password)
-                        .apply();
-
-                textResult.setText("Registro exitoso para: " + username);
-
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer, new LoginFragment())
-                        .commit();
-
-            } else {
-                textResult.setText("Completa todos los campos y asegúrate de estar visible.");
+            if (username.isEmpty() || password.isEmpty()) {
+                textResult.setText("Completa todos los campos.");
+                return;
+            }
+            if (!isFaceDetected) {
+                textResult.setText("Asegúrate de que tu rostro esté visible.");
+                return;
             }
 
+            // 1) Recupera o crea el set de usuarios
+            Set<String> users = new HashSet<>(sharedPreferences.getStringSet("users", new HashSet<>()));
+
+            if (users.contains(username)) {
+                textResult.setText("El usuario ya existe.");
+                return;
+            }
+
+            // 2) Añade el usuario y su contraseña
+            users.add(username);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putStringSet("users", users);
+            editor.putString("pass_" + username, password);
+            editor.apply();
+
+            textResult.setText("Registro exitoso: " + username);
+
+            // 3) Vuelve al login
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new LoginFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         initFaceDetection();
-
         return view;
     }
 
@@ -84,7 +100,8 @@ public class RegisterFragment extends Fragment {
         faceDetector = FaceDetection.getClient(
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-                        .build());
+                        .build()
+        );
 
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(requireContext());
@@ -92,10 +109,8 @@ public class RegisterFragment extends Fragment {
         cameraProviderFuture.addListener(() -> {
             try {
                 cameraProvider = cameraProviderFuture.get();
-
                 Preview preview = new Preview.Builder().build();
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-
+                CameraSelector selector = CameraSelector.DEFAULT_FRONT_CAMERA;
                 ImageAnalysis analysis = new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
@@ -103,22 +118,19 @@ public class RegisterFragment extends Fragment {
                 analysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), imageProxy -> {
                     @SuppressLint("UnsafeOptInUsageError")
                     InputImage image = InputImage.fromMediaImage(
-                            imageProxy.getImage(), imageProxy.getImageInfo().getRotationDegrees());
+                            imageProxy.getImage(), imageProxy.getImageInfo().getRotationDegrees()
+                    );
 
                     faceDetector.process(image)
                             .addOnSuccessListener(faces -> {
-                                if (!faces.isEmpty()) {
-                                    if (!isFaceDetected) {
-                                        isFaceDetected = true;
-                                        textResult.setText("Rostro detectado. Ya puedes registrarte.");
-                                        btnRegister.setEnabled(true);
-                                    }
-                                } else {
-                                    if (isFaceDetected) {
-                                        isFaceDetected = false;
-                                        textResult.setText("Sin rostro. Esperando...");
-                                        btnRegister.setEnabled(false);
-                                    }
+                                if (!faces.isEmpty() && !isFaceDetected) {
+                                    isFaceDetected = true;
+                                    btnRegister.setEnabled(true);
+                                    textResult.setText("Rostro detectado. Ya puedes registrarte.");
+                                } else if (faces.isEmpty() && isFaceDetected) {
+                                    isFaceDetected = false;
+                                    btnRegister.setEnabled(false);
+                                    textResult.setText("Sin rostro. Esperando...");
                                 }
                                 imageProxy.close();
                             })
@@ -129,10 +141,8 @@ public class RegisterFragment extends Fragment {
                 });
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
-                        getViewLifecycleOwner(), cameraSelector, preview, analysis);
+                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), selector, preview, analysis);
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
             } catch (Exception e) {
                 textResult.setText("Error al iniciar cámara.");
                 e.printStackTrace();
@@ -140,25 +150,16 @@ public class RegisterFragment extends Fragment {
         }, ContextCompat.getMainExecutor(requireContext()));
     }
 
-    // Libera la cámara al pausar el fragmento
     @Override
     public void onPause() {
         super.onPause();
-        if (cameraProvider != null) {
-            cameraProvider.unbindAll();
-        }
+        if (cameraProvider != null) cameraProvider.unbindAll();
     }
 
-    // Libera la cámara y el detector cuando se destruye la vista
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (cameraProvider != null) {
-            cameraProvider.unbindAll();
-        }
-        if (faceDetector != null) {
-            faceDetector.close();
-        }
+        if (cameraProvider != null) cameraProvider.unbindAll();
+        if (faceDetector != null) faceDetector.close();
     }
 }
-
